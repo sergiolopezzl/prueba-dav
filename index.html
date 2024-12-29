@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        input, textarea, button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        button {
+            background-color: #45753D;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3dc12c;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventory API Tester</h1>
+
+    <div class="section">
+        <h2>Get Products</h2>
+        <button onclick="getProducts()">Fetch All Products</button>
+        <pre id="getOutput"></pre>
+    </div>
+
+    <div class="section">
+        <h2>Add Product (POST)</h2>
+        <label for="postName">Name:</label>
+        <input type="text" id="postName">
+        <label for="postDescription">Description:</label>
+        <input type="text" id="postDescription">
+        <label for="postPrice">Price:</label>
+        <input type="number" id="postPrice" step="0.01">
+        <label for="postQuantity">Quantity:</label>
+        <input type="number" id="postQuantity">
+        <button onclick="addProduct()">Add Product</button>
+        <pre id="postOutput"></pre>
+    </div>
+
+    <div class="section">
+        <h2>Update Product (PUT)</h2>
+        <label for="putId">Product ID:</label>
+        <input type="text" id="putId">
+        <label for="putName">Name:</label>
+        <input type="text" id="putName">
+        <label for="putDescription">Description:</label>
+        <input type="text" id="putDescription">
+        <label for="putPrice">Price:</label>
+        <input type="number" id="putPrice" step="0.01">
+        <label for="putQuantity">Quantity:</label>
+        <input type="number" id="putQuantity">
+        <button onclick="updateProduct()">Update Product</button>
+        <pre id="putOutput"></pre>
+    </div>
+
+    <div class="section">
+        <h2>Delete Product (DELETE)</h2>
+        <label for="deleteId">Product ID:</label>
+        <input type="text" id="deleteId">
+        <button onclick="deleteProduct()">Delete Product</button>
+        <pre id="deleteOutput"></pre>
+    </div>
+
+    <script>
+        const apiUrl = "http://localhost:8000/products";
+        const token = "PruebaToken*";
+
+        async function getProducts() {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: { "Authorization": token }
+                });
+                const data = await response.json();
+                document.getElementById("getOutput").innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById("getOutput").innerText = error.message;
+            }
+        }
+
+        async function addProduct() {
+            const name = document.getElementById("postName").value;
+            const description = document.getElementById("postDescription").value;
+            const price = parseFloat(document.getElementById("postPrice").value);
+            const quantity = parseInt(document.getElementById("postQuantity").value);
+
+            const body = JSON.stringify({ name, description, price, quantity });
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    },
+                    body
+                });
+                const data = await response.text();
+                document.getElementById("postOutput").innerText = data;
+            } catch (error) {
+                document.getElementById("postOutput").innerText = error.message;
+            }
+        }
+
+        async function updateProduct() {
+            const id = document.getElementById("putId").value;
+            const name = document.getElementById("putName").value;
+            const description = document.getElementById("putDescription").value;
+            const price = parseFloat(document.getElementById("putPrice").value);
+            const quantity = parseInt(document.getElementById("putQuantity").value);
+
+            const body = JSON.stringify({ name, description, price, quantity });
+
+            try {
+                const response = await fetch(`${apiUrl}/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    },
+                    body
+                });
+                const data = await response.text();
+                document.getElementById("putOutput").innerText = data;
+            } catch (error) {
+                document.getElementById("putOutput").innerText = error.message;
+            }
+        }
+
+        async function deleteProduct() {
+            const id = document.getElementById("deleteId").value;
+
+            try {
+                const response = await fetch(`${apiUrl}/${id}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": token }
+                });
+                const data = await response.text();
+                document.getElementById("deleteOutput").innerText = data;
+            } catch (error) {
+                document.getElementById("deleteOutput").innerText = error.message;
+            }
+        }
+    </script>
+</body>
+</html>
