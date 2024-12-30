@@ -3,7 +3,6 @@ package app.apiRESTful.controller;
 import com.sun.net.httpserver.HttpExchange;
 import app.apiRESTful.dao.ProductDAOSQL;
 import app.apiRESTful.model.Product;
-import app.apiRESTful.auth.AuthManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,11 +11,9 @@ import java.util.List;
 public class ProductController {
 
     private final ProductDAOSQL ProductDAOSQL;
-    private final AuthManager authManager;
 
-    public ProductController(ProductDAOSQL ProductDAOSQL, AuthManager authManager) {
+    public ProductController(ProductDAOSQL ProductDAOSQL) {
         this.ProductDAOSQL = ProductDAOSQL;
-        this.authManager = authManager;
     }
 
     // Método para añadir encabezados CORS a la respuesta
@@ -24,19 +21,13 @@ public class ProductController {
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*"); // Permitir todos los orígenes
         exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
         exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Encabezados permitidos
+        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
     }
 
     // Maneja la solicitud GET para obtener todos los productos
     public void handleGetProducts(HttpExchange exchange) throws IOException {
         addCorsHeaders(exchange); // Agregar encabezados CORS
         String method = exchange.getRequestMethod();
-        String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
-
-        // Validar autorización
-        if (!authManager.isAuthenticated(authHeader)) {
-            sendResponse(exchange, 401, "Unauthorized");
-            return;
-        }
 
         if ("GET".equals(method)) {
             List<Product> products = ProductDAOSQL.getAllProducts();
@@ -50,18 +41,10 @@ public class ProductController {
     public void handleAddProduct(HttpExchange exchange) throws IOException {
         addCorsHeaders(exchange); // Agregar encabezados CORS
         String method = exchange.getRequestMethod();
-        String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
-
-        // Validar autorización
-        if (!authManager.isAuthenticated(authHeader)) {
-            sendResponse(exchange, 401, "Unauthorized");
-            return;
-        }
 
         if ("POST".equals(method)) {
-            System.out.println("iu");
             String body = new String(exchange.getRequestBody().readAllBytes());
-            System.out.println("iu2");
+
             try {
                 // Parsear los datos del producto desde el cuerpo de la solicitud
                 String name = extractJsonValue(body, "name");
@@ -79,7 +62,7 @@ public class ProductController {
                 ProductDAOSQL.addProduct(product);
                 sendResponse(exchange, 201, "Product added: " + product.toString());
             } catch (Exception e) {
-                sendResponse(exchange, 400, "Invalid request body"+e);
+                sendResponse(exchange, 400, "Invalid request body" + e);
             }
         } else {
             sendResponse(exchange, 405, "Method Not Allowed");
@@ -90,13 +73,6 @@ public class ProductController {
     public void handleUpdateProduct(HttpExchange exchange) throws IOException {
         addCorsHeaders(exchange); // Agregar encabezados CORS
         String method = exchange.getRequestMethod();
-        String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
-
-        // Validar autorización
-        if (!authManager.isAuthenticated(authHeader)) {
-            sendResponse(exchange, 401, "Unauthorized");
-            return;
-        }
 
         if ("PUT".equals(method)) {
             String body = new String(exchange.getRequestBody().readAllBytes());
@@ -132,7 +108,7 @@ public class ProductController {
                         double price = Double.parseDouble(priceStr);
                         existingProduct.setPrice(price);
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid price value"+e);
+                        throw new IllegalArgumentException("Invalid price value" + e);
                     }
                 }
                 if (quantityStr != null && !"null".equals(quantityStr)) {
@@ -154,20 +130,12 @@ public class ProductController {
         } else {
             sendResponse(exchange, 405, "Method Not Allowed");
         }
-        
     }
 
     // Maneja la solicitud DELETE para eliminar un producto
     public void handleDeleteProduct(HttpExchange exchange) throws IOException {
         addCorsHeaders(exchange); // Agregar encabezados CORS
         String method = exchange.getRequestMethod();
-        String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
-
-        // Validar autorización
-        if (!authManager.isAuthenticated(authHeader)) {
-            sendResponse(exchange, 401, "Unauthorized");
-            return;
-        }
 
         if ("DELETE".equals(method)) {
             String productId = extractIdFromUri(exchange.getRequestURI().toString());
@@ -223,5 +191,4 @@ public class ProductController {
             return json.substring(startIndex, endIndex).trim(); // Retornar valor como string
         }
     }
-
 }

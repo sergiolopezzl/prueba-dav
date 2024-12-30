@@ -1,12 +1,75 @@
 package app.apiRESTful.auth;
 
-public class AuthManager {
-    // Token válido para la autenticación (en un escenario real, usarías un sistema de validación más complejo)
-    private final String validToken = "PruebaToken*";
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 
-    // Método que verifica si el token proporcionado es válido
-    public boolean isAuthenticated(String token) {
-        // Compara el token recibido con el token válido
-        return validToken.equals(token);
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+public class AuthManager {
+
+    // Clave secreta para HMAC (debe ser suficientemente larga para HS256)
+    private static final String SECRET_KEY_STRING = "A_Very_Complex_Secret_Key_That_Is_Long_Enough_For_HS256";
+
+    // Convertir la clave secreta a un formato adecuado para HMAC
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
+
+    /**
+     * Genera un token JWT para el usuario dado.
+     * @param username El nombre del usuario.
+     * @return El token JWT generado.
+     */
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS256) // Usar clave segura
+                .compact();
+    }
+
+    /**
+     * Valida un token JWT.
+     * @param token El token JWT.
+     * @return Verdadero si el token es válido, falso en caso contrario.
+     */
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY) // Usar clave segura
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.err.println("El token ha expirado: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.err.println("El token no es soportado: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.err.println("El token está mal formado: " + e.getMessage());
+        } catch (SignatureException e) {
+            System.err.println("La firma del token no es válida: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("El token está vacío o nulo: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Extrae el nombre de usuario del token JWT.
+     * @param token El token JWT.
+     * @return El nombre de usuario extraído.
+     */
+    public String getUsernameFromToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY) // Usar clave segura
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (Exception e) {
+            System.err.println("Error al obtener el usuario del token: " + e.getMessage());
+            return null;
+        }
     }
 }

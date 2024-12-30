@@ -41,12 +41,32 @@
 <body>
     <h1>Inventory API Tester</h1>
 
+    <!-- Login Section -->
+    <div class="section">
+        <h2>Login</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" value="sergio">
+        <label for="password">Password:</label>
+        <input type="password" id="password" value="123">
+        <button onclick="login()">Login</button>
+        <pre id="loginOutput"></pre>
+    </div>
+
+    <!-- Access Protected Endpoint -->
+    <div class="section">
+        <h2>Access Protected Endpoint</h2>
+        <button onclick="accessProtected()">Access /protected</button>
+        <pre id="protectedOutput"></pre>
+    </div>
+
+    <!-- Get Products -->
     <div class="section">
         <h2>Get Products</h2>
         <button onclick="getProducts()">Fetch All Products</button>
         <pre id="getOutput"></pre>
     </div>
 
+    <!-- Add Product -->
     <div class="section">
         <h2>Add Product (POST)</h2>
         <label for="postName">Name:</label>
@@ -61,6 +81,7 @@
         <pre id="postOutput"></pre>
     </div>
 
+    <!-- Update Product -->
     <div class="section">
         <h2>Update Product (PUT)</h2>
         <label for="putId">Product ID:</label>
@@ -77,6 +98,7 @@
         <pre id="putOutput"></pre>
     </div>
 
+    <!-- Delete Product -->
     <div class="section">
         <h2>Delete Product (DELETE)</h2>
         <label for="deleteId">Product ID:</label>
@@ -86,17 +108,65 @@
     </div>
 
     <script>
-        const apiUrl = "http://localhost:8000/products";
-        const token = "PruebaToken*";
+        const apiUrl = "http://localhost:8000";
+        let token = "";  // Global token variable
+
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch(`${apiUrl}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    token = data.token; // Save the token
+                    document.getElementById("loginOutput").innerText = "Login successful! Token obtained.";
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById("loginOutput").innerText = `Login failed: ${errorText}`;
+                }
+            } catch (error) {
+                document.getElementById("loginOutput").innerText = error.message;
+            }
+        }
+
+        async function accessProtected() {
+            try {
+                const response = await fetch(`${apiUrl}/protected`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.text();
+                    document.getElementById("protectedOutput").innerText = data;
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById("protectedOutput").innerText = `Access failed: ${errorText}`;
+                }
+            } catch (error) {
+                document.getElementById("protectedOutput").innerText = error.message;
+            }
+        }
 
         async function getProducts() {
             try {
-                const response = await fetch(apiUrl, {
+                const response = await fetch(`${apiUrl}/products`, {
                     method: "GET",
-                    headers: { "Authorization": token }
+                    headers: { "Authorization": `Bearer ${token}` }
                 });
-                const data = await response.json();
-                document.getElementById("getOutput").innerText = JSON.stringify(data, null, 2);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById("getOutput").innerText = JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById("getOutput").innerText = await response.text();
+                }
             } catch (error) {
                 document.getElementById("getOutput").innerText = error.message;
             }
@@ -111,14 +181,15 @@
             const body = JSON.stringify({ name, description, price, quantity });
 
             try {
-                const response = await fetch(apiUrl, {
+                const response = await fetch(`${apiUrl}/products`, {
                     method: "POST",
                     headers: {
-                        "Authorization": token,
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
                     body
                 });
+
                 const data = await response.text();
                 document.getElementById("postOutput").innerText = data;
             } catch (error) {
@@ -136,14 +207,15 @@
             const body = JSON.stringify({ name, description, price, quantity });
 
             try {
-                const response = await fetch(`${apiUrl}/${id}`, {
+                const response = await fetch(`${apiUrl}/products/${id}`, {
                     method: "PUT",
                     headers: {
-                        "Authorization": token,
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
                     body
                 });
+
                 const data = await response.text();
                 document.getElementById("putOutput").innerText = data;
             } catch (error) {
@@ -155,10 +227,11 @@
             const id = document.getElementById("deleteId").value;
 
             try {
-                const response = await fetch(`${apiUrl}/${id}`, {
+                const response = await fetch(`${apiUrl}/products/${id}`, {
                     method: "DELETE",
-                    headers: { "Authorization": token }
+                    headers: { "Authorization": `Bearer ${token}` }
                 });
+
                 const data = await response.text();
                 document.getElementById("deleteOutput").innerText = data;
             } catch (error) {
