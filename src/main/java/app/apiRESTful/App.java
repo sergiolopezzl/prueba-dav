@@ -2,8 +2,11 @@ package app.apiRESTful;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
+
+import app.apiRESTful.controller.AuthController;
 import app.apiRESTful.controller.ProductController;
-import app.apiRESTful.dao.ProductDAO;
+import app.apiRESTful.controller.ProtectedController;
+import app.apiRESTful.dao.ProductDAOSQL;
 import app.apiRESTful.auth.AuthManager;
 
 import java.io.IOException;
@@ -13,11 +16,23 @@ import java.net.InetSocketAddress;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        ProductDAO productDAO = new ProductDAO();
+        ProductDAOSQL ProductDAOSQL = new ProductDAOSQL();
         AuthManager authManager = new AuthManager();
-        ProductController productController = new ProductController(productDAO, authManager);
+        ProductController productController = new ProductController(ProductDAOSQL, authManager);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+        try {
+            // Cargar el driver JDBC
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Registrar el handler para el login
+        server.createContext("/login", new AuthController());
+
+        // Registrar el handler para el endpoint protegido
+        server.createContext("/protected", new ProtectedController());
 
         server.createContext("/products", exchange -> {
             String method = exchange.getRequestMethod();

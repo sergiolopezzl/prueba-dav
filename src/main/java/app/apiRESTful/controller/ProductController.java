@@ -1,7 +1,7 @@
 package app.apiRESTful.controller;
 
 import com.sun.net.httpserver.HttpExchange;
-import app.apiRESTful.dao.ProductDAO;
+import app.apiRESTful.dao.ProductDAOSQL;
 import app.apiRESTful.model.Product;
 import app.apiRESTful.auth.AuthManager;
 
@@ -11,11 +11,11 @@ import java.util.List;
 
 public class ProductController {
 
-    private final ProductDAO productDAO;
+    private final ProductDAOSQL ProductDAOSQL;
     private final AuthManager authManager;
 
-    public ProductController(ProductDAO productDAO, AuthManager authManager) {
-        this.productDAO = productDAO;
+    public ProductController(ProductDAOSQL ProductDAOSQL, AuthManager authManager) {
+        this.ProductDAOSQL = ProductDAOSQL;
         this.authManager = authManager;
     }
 
@@ -39,7 +39,7 @@ public class ProductController {
         }
 
         if ("GET".equals(method)) {
-            List<Product> products = productDAO.getAllProducts();
+            List<Product> products = ProductDAOSQL.getAllProducts();
             sendResponse(exchange, 200, products.toString());
         } else {
             sendResponse(exchange, 405, "Method Not Allowed");
@@ -76,7 +76,7 @@ public class ProductController {
                 }
         
                 Product product = new Product(name, description, price, quantity);
-                productDAO.addProduct(product);
+                ProductDAOSQL.addProduct(product);
                 sendResponse(exchange, 201, "Product added: " + product.toString());
             } catch (Exception e) {
                 sendResponse(exchange, 400, "Invalid request body"+e);
@@ -109,7 +109,7 @@ public class ProductController {
                 String productId = pathParts[2];
         
                 // Obtener el producto existente
-                Product existingProduct = productDAO.getProductById(productId);
+                Product existingProduct = ProductDAOSQL.getProductById(productId);
                 if (existingProduct == null) {
                     sendResponse(exchange, 404, "Product not found");
                     return;
@@ -120,8 +120,7 @@ public class ProductController {
                 String description = extractJsonValue(body, "description");
                 String priceStr = extractJsonValue(body, "price");
                 String quantityStr = extractJsonValue(body, "quantity");
-                System.out.println(priceStr.getClass().getSimpleName());
-                System.out.println(priceStr);
+
                 if (name != null && !"".equals(name)) {
                     existingProduct.setName(name);
                 }
@@ -129,8 +128,6 @@ public class ProductController {
                     existingProduct.setDescription(description);
                 }
                 if (priceStr != null && !"null".equals(priceStr)) {
-                    System.out.println(priceStr.getClass().getSimpleName());
-                    System.out.println(priceStr);
                     try {
                         double price = Double.parseDouble(priceStr);
                         existingProduct.setPrice(price);
@@ -148,7 +145,7 @@ public class ProductController {
                 }
         
                 // Guardar los cambios (en este caso, los cambios ya están aplicados al objeto existente)
-                productDAO.updateProduct(productId, existingProduct);
+                ProductDAOSQL.updateProduct(productId, existingProduct);
         
                 sendResponse(exchange, 200, "Product updated: " + existingProduct.toString());
             } catch (Exception e) {
@@ -179,7 +176,7 @@ public class ProductController {
                 return;
             }
 
-            boolean success = productDAO.deleteProduct(productId);
+            boolean success = ProductDAOSQL.deleteProduct(productId);
             if (success) {
                 sendResponse(exchange, 200, "Product deleted.");
             } else {
