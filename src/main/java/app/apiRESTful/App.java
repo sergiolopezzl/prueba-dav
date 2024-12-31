@@ -6,7 +6,9 @@ import com.sun.net.httpserver.HttpExchange;
 import app.apiRESTful.controller.AuthController;
 import app.apiRESTful.controller.ProductController;
 import app.apiRESTful.controller.ProtectedController;
+import app.apiRESTful.controller.UserController;
 import app.apiRESTful.dao.ProductDAOSQL;
+import app.apiRESTful.dao.UserDAOSQL;
 import app.apiRESTful.auth.AuthManager;
 
 import java.io.IOException;
@@ -17,7 +19,9 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         ProductDAOSQL productDAOSQL = new ProductDAOSQL();
+        UserDAOSQL userDAOSQL = new UserDAOSQL();
         ProductController productController = new ProductController(productDAOSQL);
+        UserController userController = new UserController(userDAOSQL);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         try {
@@ -96,6 +100,39 @@ public class App {
             }
         });
     
+        // Contexto para manejar solicitudes de usuarios
+        server.createContext("/users", exchange -> {
+            String method = exchange.getRequestMethod();
+
+            // Manejar preflight (OPTIONS)
+            if ("OPTIONS".equalsIgnoreCase(method)) {
+                userController.addCorsHeaders(exchange);
+                exchange.sendResponseHeaders(200, -1); // No hay cuerpo de respuesta
+                return;
+            }
+
+            // Procesar la solicitud
+            switch (method.toUpperCase()) {
+                case "GET":
+                    userController.handleGetUsers(exchange);
+                    break;
+                case "POST":
+                    userController.handleAddUser(exchange);
+                    break;
+                case "PUT":
+                    userController.handleUpdateUser(exchange);
+                    break;
+                case "DELETE":
+                    userController.handleDeleteUser(exchange);
+                    break;
+                default:
+                    userController.addCorsHeaders(exchange);
+                    sendResponse(exchange, 405, "Method Not Allowed");
+                    break;
+            }
+        });
+
+
         server.setExecutor(null);
         server.start();
         System.out.println("Server started on port 8000");

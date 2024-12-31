@@ -9,7 +9,7 @@ import java.util.Date;
 public class AuthManager {
 
     // Clave secreta para HMAC (debe ser suficientemente larga para HS256)
-    private static final String SECRET_KEY_STRING = "A_Very_Complex_Secret_Key_That_Is_Long_Enough_For_HS256";
+    private static final String SECRET_KEY_STRING = "@H$256!Cl4v3^S3gur4#C0n_L3tr4s&Númer0s%2024*+_>8XyZ!";
 
     // Convertir la clave secreta a un formato adecuado para HMAC
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
@@ -23,7 +23,7 @@ public class AuthManager {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutos
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256) // Usar clave segura
                 .compact();
     }

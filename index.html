@@ -40,6 +40,16 @@
 </head>
 <body>
     <h1>Inventory API Tester</h1>
+    <!-- Register Section -->
+    <div class="section">
+        <h2>Register</h2>
+        <label for="regUsername">Username:</label>
+        <input type="text" id="regUsername">
+        <label for="regPassword">Password:</label>
+        <input type="password" id="regPassword">
+        <button onclick="registerUser()">Register</button>
+        <pre id="registerOutput"></pre>
+    </div>
 
     <!-- Login Section -->
     <div class="section">
@@ -238,6 +248,33 @@
                 document.getElementById("deleteOutput").innerText = error.message;
             }
         }
+
+        async function registerUser() {
+            const username = document.getElementById("regUsername").value;
+            const password = document.getElementById("regPassword").value;
+
+            const body = JSON.stringify({ username, password });
+
+            try {
+                const response = await fetch(`${apiUrl}/users`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body
+                });
+
+                if (response.ok) {
+                    document.getElementById("registerOutput").innerText = "User registered successfully!";
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById("registerOutput").innerText = `Registration failed: ${errorText}`;
+                }
+            } catch (error) {
+                document.getElementById("registerOutput").innerText = error.message;
+            }
+        }
+
     </script>
 </body>
 </html>

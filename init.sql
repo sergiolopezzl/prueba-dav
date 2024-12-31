@@ -16,6 +16,7 @@ CREATE TABLE products (
 
 -- Insertar datos de ejemplo
 INSERT INTO users (username, password) VALUES ('sergio', '123');
+INSERT INTO users (username, password) VALUES ('daniel', '111');
 INSERT INTO users (username, password) VALUES ('admin', '321');
 
 INSERT INTO products (id, name, description, price, quantity) VALUES

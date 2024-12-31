@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Scanner;
+
 
 public class AuthController implements HttpHandler {
 

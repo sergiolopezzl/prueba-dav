@@ -1,11 +1,13 @@
 package app.database;
 
 import java.sql.*;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class DatabaseHelper {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
-    private static final String DB_USER = "myuser";
-    private static final String DB_PASSWORD = "mypassword";
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String DB_URL = dotenv.get("DB_URL");
+    private static final String DB_USER = dotenv.get("DB_USER");
+    private static final String DB_PASSWORD = dotenv.get("DB_PASSWORD");
 
     // Conectar a la base de datos
     public static Connection getConnection() throws SQLException {
