@@ -10,20 +10,7 @@ Este proyecto implementa una API RESTful en Java utilizando la clase `HttpServer
 
 El proyecto está estructurado de la siguiente manera:
 
-app/
-├── apiRESTful/
-│   ├── auth/ ------------   # Autenticación y generación de tokens JWT
-│   ├── controller/ -----   # Controladores para manejar las rutas HTTP
-│   ├── dao/ -------------   # Acceso a la base de datos (DAO)
-│   ├── model/ ----------   # Clases de modelo (Producto, Usuario)
-│   └── App.java---------   # Clase principal para iniciar el servidor HTTP
-├── database/ ---------  # Clases para conectar y gestionar la base de datos
-├── .env -----------------  # Variables de entorno (DB_URL, DB_USER, DB_PASSWORD)
-├── index.html ---------   # Pagina basica para probar la API mas facil (preferiblemente usar el servicio web react | netxjs creado)
-├── swagger.json ------   # Documentación técnica
-├── init.sql --------------- # Script para crear la BD
-├── Dockerfile ---------- # Conterizar la BD
-└── pom.xml ------------ # Archivo de dependecias decesarias del pryecto
+![estructura.png](images/estructura.png)
 
 ## Funcionalidades
 
@@ -86,6 +73,12 @@ Estas dependencias están organizadas para cubrir las funcionalidades necesarias
 - JSON: `Gson`.
 - Configuración: `dotenv-java`.
 
+---
+
+# Diagrama de diseño detallado
+![diagrama.png](images/diagrama.png)
+
+---
 # API Endpoints
 
 La API RESTful ofrece varios endpoints para manejar autenticación, productos y usuarios. A continuación, se detallan los endpoints disponibles.
@@ -444,10 +437,6 @@ Authorization: Bearer {token}
 ## Notas Adicionales
 - Todos los endpoints están protegidos por CORS.
 - La autenticación mediante JWT es obligatoria para realizar solicitudes a endpoints protegidos.
-
----
-# Diagrama de diseño detallado
-![diagrama.png](images\diagrama.png)
 
 ---
 
