@@ -440,7 +440,7 @@ Authorization: Bearer {token}
 
 ---
 
-## Pasos para ejecutar el proyecto
+# Pasos para ejecutar el proyecto
 
 ### Paso 1: Descargar proyecto
 * Clone el repositorio de GitHub:
@@ -513,7 +513,9 @@ Antes de comenzar, asegúrate de tener las siguientes herramientas instaladas en
 - [Node.js](https://nodejs.org/) (v20 o superior recomendado)
 - [npm](https://www.npmjs.com/) o [yarn](https://yarnpkg.com/) (para manejar las dependencias) **Preferiblemente >>** [npm](https://www.npmjs.com/)
 
-## Pasos para ejecutar el proyecto
+---
+
+# Pasos para ejecutar el proyecto
 
 ### Paso 1: Descargar proyecto 
 * Clone el repositorio de GitHub:
