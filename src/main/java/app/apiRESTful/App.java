@@ -14,6 +14,8 @@ import app.apiRESTful.auth.AuthManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class App {
 
@@ -30,6 +32,40 @@ public class App {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+            server.createContext("/swagger.json", exchange -> {
+                String swaggerJson = new String(Files.readAllBytes(Paths.get("swagger.json"))); // Ruta al archivo swagger.json
+                exchange.getResponseHeaders().add("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, swaggerJson.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(swaggerJson.getBytes());
+                os.close();
+            });
+
+            server.createContext("/swagger-ui", exchange -> {
+                String response = """
+                    <html>
+                    <head>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css">
+                    </head>
+                    <body>
+                        <div id="swagger-ui"></div>
+                        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
+                        <script>
+                            const ui = SwaggerUIBundle({
+                                url: '/swagger.json',
+                                dom_id: '#swagger-ui'
+                            });
+                        </script>
+                    </body>
+                    </html>
+                    """;
+                exchange.getResponseHeaders().add("Content-Type", "text/html");
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            });
+            
             // Registrar el handler para el login
             server.createContext("/login", exchange -> {
                 if ("OPTIONS".equals(exchange.getRequestMethod())) {

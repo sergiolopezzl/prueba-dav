@@ -29,8 +29,8 @@ out/
 *.dylib
 *.ncb
 *.sdf
-*.suo
 *.pdb
+*.suo
 *.idb
 *.dmg
 *.app
@@ -62,9 +62,9 @@ build/
 .gradle/
 
 # Archivos de configuración
-.env
-.env.local
-.env.*.local
+#.env
+#.env.local
+#.env.*.local
 node_modules/
 npm-debug.log*
 yarn-debug.log*

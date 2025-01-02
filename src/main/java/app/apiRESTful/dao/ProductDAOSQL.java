@@ -7,14 +7,23 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase `ProductDAOSQL` para manejar la interacción con la base de datos relacionada con productos.
+ * Utiliza JDBC para conectar y realizar operaciones CRUD en la base de datos.
+ */
 public class ProductDAOSQL {
 
+    // Carga las variables de entorno necesarias para la conexión a la base de datos.
     private static final Dotenv dotenv = Dotenv.load();
-    private static final String DB_URL = dotenv.get("DB_URL");
-    private static final String DB_USER = dotenv.get("DB_USER");
-    private static final String DB_PASSWORD = dotenv.get("DB_PASSWORD");
+    private static final String DB_URL = dotenv.get("DB_URL"); // URL de la base de datos.
+    private static final String DB_USER = dotenv.get("DB_USER"); // Usuario de la base de datos.
+    private static final String DB_PASSWORD = dotenv.get("DB_PASSWORD"); // Contraseña de la base de datos.
 
-    // Obtiene todos los productos
+    /**
+     * Obtiene todos los productos de la base de datos.
+     *
+     * @return Una lista de objetos `Product` representando todos los productos en la base de datos.
+     */
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products";
@@ -23,6 +32,7 @@ public class ProductDAOSQL {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
+            // Itera sobre el resultado y crea objetos Product.
             while (resultSet.next()) {
                 Product product = new Product(
                         resultSet.getString("id"),
@@ -41,13 +51,20 @@ public class ProductDAOSQL {
         return products;
     }
 
-    // Obtiene un producto por su ID
+    /**
+     * Obtiene un producto por su ID.
+     *
+     * @param id El ID del producto a buscar.
+     * @return Un objeto `Product` si se encuentra, o `null` si no existe.
+     */
     public Product getProductById(String id) {
         String query = "SELECT * FROM products WHERE id = ?";
+
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, id);
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Product(
@@ -67,7 +84,11 @@ public class ProductDAOSQL {
         return null;
     }
 
-    // Agrega un nuevo producto
+    /**
+     * Agrega un nuevo producto a la base de datos.
+     *
+     * @param product El objeto `Product` que contiene los datos del producto a agregar.
+     */
     public void addProduct(Product product) {
         String query = "INSERT INTO products (id, name, description, price, quantity) VALUES (?, ?, ?, ?, ?)";
 
@@ -87,7 +108,12 @@ public class ProductDAOSQL {
         }
     }
 
-    // Actualiza un producto existente
+    /**
+     * Actualiza un producto existente en la base de datos.
+     *
+     * @param id             El ID del producto a actualizar.
+     * @param updatedProduct El objeto `Product` con los nuevos datos del producto.
+     */
     public void updateProduct(String id, Product updatedProduct) {
         String query = "UPDATE products SET name = ?, description = ?, price = ?, quantity = ? WHERE id = ?";
 
@@ -107,7 +133,12 @@ public class ProductDAOSQL {
         }
     }
 
-    // Elimina un producto por su ID
+    /**
+     * Elimina un producto por su ID.
+     *
+     * @param id El ID del producto a eliminar.
+     * @return `true` si se eliminó el producto con éxito, o `false` si no se encontró.
+     */
     public boolean deleteProduct(String id) {
         String query = "DELETE FROM products WHERE id = ?";
 
