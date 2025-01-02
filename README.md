@@ -6,7 +6,7 @@ ___
 
 Asegúrate de tener las siguientes herramientas instaladas en tu sistema:
 
-- [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) - Necesario para compilar y ejecutar el proyecto.
+- [Java 23 Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) - Necesario para compilar y ejecutar el proyecto.
 - [Docker](https://www.docker.com/get-started) - Para contenerizar la base de datos MySQL.
 - [Maven](https://maven.apache.org/install.html) - Para compilar y ejecutar el proyecto Java.
 
@@ -451,7 +451,7 @@ Authorization: Bearer {token}
 # Pasos para ejecutar el proyecto
 
 ### Paso 1: Descargar proyecto
-* Clone el repositorio de GitHub:
+* Abre una consola de comandos y clone el repositorio de GitHub:
 
 ```
 git clone https://github.com/sergiolopezzl/prueba-dav-apiRESTful.git
@@ -465,7 +465,7 @@ cd prueba-dav-apiRESTful
 
 ### Paso 2: Construir imagen Docker y ejecutar el contenedor MySQL
 
-* Construye la imagen de Docker con el siguiente comando:
+* Abre Docker y construye la imagen de Docker con el siguiente comando:
 
 ```
 docker build -t my-mysql-image .
@@ -484,10 +484,10 @@ docker start my-mysql-container
 ```
 ### Paso 3: Compilar el proyecto con Maven
 
-* Compila el proyecto y ejecuta las pruebas unitarias
+* Limpia y compila el proyecto 
 
 ```
-mvn clean install
+mvn clean compile
 ```
 
 ### Paso 4: Ejecutar la aplicación principal `App.java`
@@ -526,7 +526,7 @@ Antes de comenzar, asegúrate de tener las siguientes herramientas instaladas en
 # Pasos para ejecutar el proyecto
 
 ### Paso 1: Descargar proyecto 
-* Clone el repositorio de GitHub:
+* Abra una consola de comandos y clone el repositorio de GitHub:
 
 ```
 git clone https://github.com/sergiolopezzl/prueba-dav-api-inventory-restful-front.git
@@ -550,7 +550,7 @@ npm install
 npm run dev
 ```
 
-***Asegúrate de que el backend esté en ejecución; si no es así, revisa las instruccione para ejecutar la API RESTful.***
+***Asegúrate de que el backend esté en ejecución; si no es así, revisa las instruccione para ejecutar la API RESTful.*** Entra en: `http://localhost:3000/` y listo
 
 ### Demostración de la instalación y funcionamiento de todo el proyecto `video`
 

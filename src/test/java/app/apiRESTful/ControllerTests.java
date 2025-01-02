@@ -1,4 +1,5 @@
 package app.apiRESTful;
+import app.apiRESTful.auth.AuthManager;
 import app.apiRESTful.controller.ProductController;
 import app.apiRESTful.controller.ProtectedController;
 import app.apiRESTful.controller.UserController;
@@ -23,6 +24,11 @@ import static org.mockito.Mockito.*;
 
 public class ControllerTests extends TestCase {
 
+    @Override
+     protected void setUp() throws Exception {
+        super.setUp();
+        
+    }
     public void testProductControllerGetProducts() throws IOException {
         // Arrange
         ProductDAOSQL mockDAO = mock(ProductDAOSQL.class);
