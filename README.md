@@ -498,7 +498,7 @@ mvn clean compile
 mvn exec:java '-Dexec.mainClass=app.apiRESTful.App'
 ```
 
-### Paso 5: Probar API
+### Paso 5: Probar API 
 
 * Abrir el archivo `index.html` que esta en el directorio raiz utilizando el siguiente comando:
 
@@ -508,9 +508,12 @@ start index.html
 
 * Con la documentacion swagger en tu navegador `http://localhost:8000/swagger-ui`
 
+![swagger.png](images/swagger.png)
 ___
 
 # Interfaz grafica en >> React | Next.js <<
+
+![front.png](images/front.png)
 
 Este proyecto implementa una API RESTful para la gestión de productos y está desarrollado con React y Next.js. Incluye funcionalidades de autenticación(login y registro), manejo de productos(CRUD) y un sistema de enrutamiento para gestionar los diferentes componentes de la aplicación.
 
@@ -554,3 +557,4 @@ npm run dev
 
 ### Demostración de la instalación y funcionamiento de todo el proyecto `video`
 
+[![Ver la demostración del video](https://img.youtube.com/vi/xQyo9N8MMr8/maxresdefault.jpg)](https://youtu.be/xQyo9N8MMr8)
