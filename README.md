@@ -2,6 +2,14 @@
 #### SERGIO DANIEL LOPEZ VARGAS
 ___
 
+## Requisitos
+
+Asegúrate de tener las siguientes herramientas instaladas en tu sistema:
+
+- [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) - Necesario para compilar y ejecutar el proyecto.
+- [Docker](https://www.docker.com/get-started) - Para contenerizar la base de datos MySQL.
+- [Maven](https://maven.apache.org/install.html) - Para compilar y ejecutar el proyecto Java.
+
 ## Descripción
 
 Este proyecto implementa una API RESTful en Java utilizando la clase `HttpServer` de la biblioteca estándar, sin depender de frameworks como Spring Boot. Ofrece gestión de productos y usuarios con operaciones CRUD, incluyendo registro e inicio de sesión de usuarios autenticados mediante tokens JWT. Además, cuenta con un sistema de protección de endpoints que asegura que solo los usuarios autenticados puedan acceder a ciertas rutas. Los datos se almacenan en una base de datos MySQL, la cual es contenerizada con Docker, y se utiliza Maven para gestionar las dependencias y ejecutar la aplicación. También incluye pruebas unitarias para garantizar la calidad y el correcto funcionamiento del código.
@@ -544,5 +552,5 @@ npm run dev
 
 ***Asegúrate de que el backend esté en ejecución; si no es así, revisa las instruccione para ejecutar la API RESTful.***
 
-### Demostración de la instalación y funcionamiento de todo el proyecto`video`
+### Demostración de la instalación y funcionamiento de todo el proyecto `video`
 
